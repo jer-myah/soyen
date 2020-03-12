@@ -1,0 +1,220 @@
+
+$(document).ready(function(){
+
+	$("#current_password").focusout(function(){
+		var current_password = $("#current_password").val();
+		$.ajax({
+			type:'get',
+			url:'/admin/checkpassword',
+			data:{current_password:current_password},
+			success:function(resp){
+				if (resp == "false"){
+					$("#checkpassword").html("<font color='red'>  *** Wrong Password! ***</font>");
+				}
+				else if (resp == "true"){
+					$("#checkpassword").html("<font color='green'> Ok!</font>");
+				}
+			}, error:function(){
+				alert("error");
+			}
+		});
+	});
+
+	$("#category_name").focusout(function(){
+		var cat_name = $("#category_name").val();
+		$.ajax({
+			type:'get',
+			url:'/admin/checkcategory',
+			data:{cat_name:cat_name},
+			success:function(resp){
+				if (resp == "true"){
+					$("#category_exists").html("<font color='red'>  *** Category Name Already Exist! ***</font>");
+				}
+				else if (resp == "false"){
+					$("#category_exists").html("<font color='green'> Ok!</font>");
+				}
+			}, error:function(){
+				alert("error");
+			}
+		});
+	});
+	
+	$('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+	
+	$('select').select2();
+	
+	// Form Validation
+    $("#basic_validate").validate({
+		rules:{
+			required:{
+				required:true
+			},
+			email:{
+				required:true,
+				email: true
+			},
+			date:{
+				required:true,
+				date: true
+			},
+			url:{
+				required:true,
+				url: true
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+
+	// Add Category Validation
+    $("#add_category").validate({
+		rules:{
+			category_name:{
+				required:true
+			},
+			description:{
+				required:true,
+			},
+			url:{
+				required:true,
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+
+		// Add Product Validation
+		$("#add_product").validate({
+			rules:{
+				category_id:{
+					required:true
+				},
+				product_name:{
+					required:true
+				},
+				product_code:{
+					required:true
+				},
+				product_colour:{
+					required:true
+				},
+				description:{
+					required:true
+				},
+				price:{
+					required:true,
+					number:true
+				},
+				image:{
+					required:true
+				}
+			},
+			errorClass: "help-inline",
+			errorElement: "span",
+			highlight:function(element, errorClass, validClass) {
+				$(element).parents('.control-group').addClass('error');
+			},
+			unhighlight: function(element, errorClass, validClass) {
+				$(element).parents('.control-group').removeClass('error');
+				$(element).parents('.control-group').addClass('success');
+			}
+		});
+	
+	$("#number_validate").validate({
+		rules:{
+			min:{
+				required: true,
+				min:10
+			},
+			max:{
+				required:true,
+				max:24
+			},
+			number:{
+				required:true,
+				number:true
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+	
+	// Validation for Admin settings
+	$("#password_validate").validate({
+		rules:{
+			current_password:{
+				required: true,
+				minlength:6,
+				maxlength:20
+			},
+			new_password:{
+				required: true,
+				minlength:6,
+				maxlength:20
+			},
+			confirm_password:{
+				required:true,
+				minlength:6,
+				maxlength:20,
+				equalTo:"#new_password"
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+
+	// $("#delCat").click(function(){
+	// 	if(confirm('Are you sure you want to delete?')){
+	// 		return true;
+	// 	}
+	// 	return false;
+	// });
+
+	// $(document).ready(function(){
+		var maxField = 10;
+		var addButton = $('.add_button');
+		var wrapper = $('.field_wrapper');
+		var fieldHTML = '<div><input type="text" name="field_name[]" value="" /><a href="javascript:void(0);" class="remove_button" title="Remove field" ><img src="remove-icon.png" /></a></div>';
+		var x = 1;
+		$(addButton).click(function() {
+			if(x < maxField){
+				x++;
+				$(wrapper).append(fieldHTML);
+			}
+		});
+		$(wrapper).on('click', '.remove_button', function(e){
+			e.preventDefault();
+			$(this).parent('div').remove();
+			x--;
+		});
+	// });
+
+});
